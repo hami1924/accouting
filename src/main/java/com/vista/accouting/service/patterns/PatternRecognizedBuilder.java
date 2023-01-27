@@ -22,16 +22,15 @@ public class PatternRecognizedBuilder {
 
 
     public PatternRecognized getInstance(String bin) throws ServiceException {
-        GlobalObject tosanBoomRegistry = SynchronizedGlobalObjectHelper.getGlobalObject();
-        BankDto bankDto = bankRepos.getBankByBankBin(bin);
-        tosanBoomRegistry.setBank(bankDto);
+        GlobalObject globalObject = SynchronizedGlobalObjectHelper.getGlobalObject();
         return getInstance();
     }
 
     public PatternRecognized getInstance() throws ServiceException {
-        GlobalObject tosanBoomRegistry = synchronizedGlobalObjectHelper.getTbRegistry();
-        if (tosanBoomRegistry.getBank() == null) {
-            return boomProvider;
+        GlobalObject globalObject = synchronizedGlobalObjectHelper.getGlobalObject();
+
+            Optional<PatternRecognized> patternRecognized = patternRecognizedDecider.decide(globalObject.getBanksEnum());
+            return patternRecognized.orElseGet(() -> null);
     }
 
 }
