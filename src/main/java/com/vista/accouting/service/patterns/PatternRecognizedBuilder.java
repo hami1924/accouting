@@ -1,7 +1,7 @@
 package com.vista.accouting.service.patterns;
 
-import com.vista.accouting.aspect.GlobalObject;
-import com.vista.accouting.aspect.SynchronizedGlobalObjectHelper;
+import com.vista.accouting.aspect.globalObject.GlobalObject;
+import com.vista.accouting.aspect.globalObject.SynchronizedGlobalObjectHelper;
 import com.vista.accouting.exceptions.ServiceException;
 import org.springframework.stereotype.Component;
 

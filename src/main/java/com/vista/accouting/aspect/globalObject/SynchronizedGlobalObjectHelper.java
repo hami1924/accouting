@@ -1,4 +1,4 @@
-package com.vista.accouting.aspect;
+package com.vista.accouting.aspect.globalObject;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;

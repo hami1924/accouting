@@ -1,4 +1,4 @@
-package com.vista.accouting.aspect;
+package com.vista.accouting.aspect.globalObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.vista.accouting.common.ErrorResponse;

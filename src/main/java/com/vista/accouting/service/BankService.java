@@ -10,11 +10,7 @@ import java.util.Optional;
 
 public interface BankService {
 
-     SmsNumberAlert insert(SmsNumberAlert numberAlert);
 
-    Optional<SmsNumberAlert> get(String id);
-
-    List<SmsNumberAlert> list(CountryEnums countryEnums, BanksEnum banksEnum);
 
 
 }
