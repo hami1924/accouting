@@ -1,6 +1,7 @@
 package com.vista.accouting.dal.entity;
 
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -12,6 +13,5 @@ public class User  extends Entity{
     private String firstName;
 
     private String lastName;
-
-
+    private String imei;
 }

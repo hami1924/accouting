@@ -1,6 +1,7 @@
 package com.vista.accouting.dal.entity;
 
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 public class Entity implements Cloneable{
     @Id
     private String id;
+
     @Version
     protected Long version;
     protected Boolean deleted = false;

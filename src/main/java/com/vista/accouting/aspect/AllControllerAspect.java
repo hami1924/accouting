@@ -17,7 +17,7 @@ public class AllControllerAspect {
 
 
     @Around("com.vista.accouting.aspect.Interception.servicesPointCut()")
-    public ResponseEntity invoke(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public Object invoke(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         log.info("Starting ..");
 
 
@@ -33,6 +33,6 @@ public class AllControllerAspect {
         // impl log in data base
 
         log.info("Ending ...");
-        return null;
+        return response;
     }
 }
