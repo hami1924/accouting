@@ -1,4 +1,4 @@
-package com.vista.accouting.service;
+package com.vista.accouting.service.Provider;
 
 
 import com.vista.accouting.dal.entity.SmsNumberAlert;
@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface BankService {
 
+
+    boolean getMessage(String originalMessage);
 
 
 

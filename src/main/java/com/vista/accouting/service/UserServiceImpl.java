@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public User insert(User user) throws ServiceException {
         List<User> userOld=userRepository.findByMobileOrImei(user.getMobile(),user.getImei());
-        if (userOld.size()>0)
+        if (userOld.isEmpty())
              throw new ServiceException("User is exist",ServiceExceptionType.Bad_Request);
         return userRepository.save(user);
     }
@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public Optional<User>  getById(String id){
       return Optional.ofNullable(userRepository.findById(new ObjectId(id)).orElseThrow(() -> new ServiceException("not founf User", ServiceExceptionType.Not_Found)));
-//      return userRepository.findByObjectId(id);
     }
 
     @Override

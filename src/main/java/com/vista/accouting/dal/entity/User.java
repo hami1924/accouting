@@ -1,10 +1,12 @@
 package com.vista.accouting.dal.entity;
 
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "USER")
 public class User  extends Entity{
 

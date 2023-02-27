@@ -1,10 +1,13 @@
 package com.vista.accouting.dal.entity;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "RESIPIENTS")
 public class Recipients {
 
@@ -12,5 +15,12 @@ public class Recipients {
     private String uniqueId;
 
     private User user;
+
+    // be sorat kamel nabayad inja base modelash. bayad ye model kochak shode inja  base
+    private SmsNumberAlert smsNumberAlert;
+
+    private MessageInfo messageInfo;
+
+
 
 }
