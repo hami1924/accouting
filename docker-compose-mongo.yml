@@ -1,0 +1,20 @@
+version: "2"
+
+services:
+  api-database4:
+    image: mongo:4.4.18
+    container_name: api-database4
+    hostname: api-database4
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+      #    volumes:
+      #      - db:/var/lib/mysql
+    environment:
+        - MONGO_HOST=api-database4
+    networks:
+     - mongo_net1
+
+networks:
+  mongo_net1:
+    driver: bridge
