@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface BankService {
 
 
-    boolean getMessage(String originalMessage);
+    boolean getMessage(String originalMessage,String smsAlert);
 
 
 
