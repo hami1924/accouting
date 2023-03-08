@@ -14,17 +14,24 @@ public class SmsNumberAlertServiceImpl implements SmsNumberAlertService {
     private final SmsNumberAlertRepository repository;
 
     public SmsNumberAlertServiceImpl(SmsNumberAlertRepository repository) {
+
         this.repository = repository;
     }
 
     @Override
     public SmsNumberAlert insert(SmsNumberAlert numberAlert) {
+
         return repository.save(numberAlert);
     }
 
     @Override
     public Optional<SmsNumberAlert> get(String id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public SmsNumberAlert getByAlertNumber(String alertNumber) {
+        return repository.findByAlertHead(alertNumber);
     }
 
     @Override

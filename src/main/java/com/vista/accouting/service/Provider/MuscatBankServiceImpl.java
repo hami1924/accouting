@@ -4,6 +4,7 @@ package com.vista.accouting.service.Provider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vista.accouting.dal.entity.MessageInfo;
+import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.MessageType;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,11 @@ public class MuscatBankServiceImpl implements BankService {
 
     private final String beforPattern = "^.*?(?=your a/c)";
 
+
+    @Override
+    public boolean support(BanksEnum banksEnum) {
+        return BanksEnum.MUSCAT_BANK.equals(banksEnum);
+    }
 
     @Override
     public MessageInfo getMessage(String originalMessage, String smsAlert) {

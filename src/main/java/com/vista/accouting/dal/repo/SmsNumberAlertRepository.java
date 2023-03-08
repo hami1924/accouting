@@ -13,5 +13,7 @@ public interface SmsNumberAlertRepository extends MongoRepository<SmsNumberAlert
 
     List<SmsNumberAlert> findByBanksOrCountry(BanksEnum banksEnum, CountryEnums countryEnums);
 
+    SmsNumberAlert findByAlertHead(String alertHead);
+
 
 }

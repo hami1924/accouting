@@ -1,10 +1,11 @@
 package com.vista.accouting.service;
 
-import com.vista.accouting.controller.dto.messageDto;
+import com.vista.accouting.service.models.Message;
 
 import java.util.List;
 
 public interface RecipientsService {
 
-    boolean insertRecipientsList(List<messageDto> list);
+    boolean insertRecipientsList(Message message);
+
 }

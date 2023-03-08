@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class messageDto {
+public class MessageDto {
 
     private String mobile;
 

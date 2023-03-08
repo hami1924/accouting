@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface BankService {
 
-
+    boolean support(BanksEnum banksEnum);
     MessageInfo getMessage(String originalMessage, String smsAlert);
 
 

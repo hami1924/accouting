@@ -13,5 +13,7 @@ public interface SmsNumberAlertService {
 
     Optional<SmsNumberAlert> get(String id);
 
+    SmsNumberAlert getByAlertNumber(String alertNumber);
+
     List<SmsNumberAlert> list(CountryEnums countryEnums, BanksEnum banksEnum);
 }
