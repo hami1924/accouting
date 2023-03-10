@@ -26,5 +26,5 @@ public class MessageDto {
 
     private String numberAlert;
 
-    private List<String> data;
+    private List<ContentDto> data;
 }

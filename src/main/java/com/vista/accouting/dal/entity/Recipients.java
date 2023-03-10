@@ -9,10 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "RESIPIENTS")
-public class Recipients {
-
-    @Id
-    private String uniqueId;
+public class Recipients extends Entity {
 
     private User user;
 

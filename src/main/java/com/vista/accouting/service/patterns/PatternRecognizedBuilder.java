@@ -2,6 +2,7 @@ package com.vista.accouting.service.patterns;
 
 import com.vista.accouting.aspect.globalObject.GlobalObject;
 import com.vista.accouting.aspect.globalObject.SynchronizedGlobalObjectHelper;
+import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.exceptions.ServiceException;
 import com.vista.accouting.service.Provider.BankService;
 import org.springframework.stereotype.Component;
@@ -22,9 +23,9 @@ public class PatternRecognizedBuilder {
     }
 
 
-    public BankService getInstance(String bin) throws ServiceException {
-        GlobalObject globalObject = SynchronizedGlobalObjectHelper.getGlobalObject();
-        return getInstance();
+    public BankService getInstance(BanksEnum  banksEnum) throws ServiceException {
+        Optional<BankService> patternRecognized = patternRecognizedDecider.decide(banksEnum);
+        return patternRecognized.orElseGet(() -> null);
     }
 
     public BankService getInstance() throws ServiceException {

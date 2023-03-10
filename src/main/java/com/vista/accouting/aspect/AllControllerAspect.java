@@ -1,5 +1,7 @@
 package com.vista.accouting.aspect;
 
+import com.vista.accouting.aspect.globalObject.GlobalObject;
+import com.vista.accouting.aspect.globalObject.SynchronizedGlobalObjectHelper;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,7 +22,9 @@ public class AllControllerAspect {
     public Object invoke(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         log.info("Starting ..");
 
+        GlobalObject globalObject=new GlobalObject();
 
+        SynchronizedGlobalObjectHelper.putGlobalObject(globalObject);
         //check sms number and  set in GlobalObject
 
         //statrt  for calculate time

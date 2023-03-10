@@ -36,23 +36,25 @@ public class RecipientsServiceImpl implements RecipientsService{
     @Override
     public boolean insertRecipientsList(Message messageModel) {
         GlobalObject globalObject = SynchronizedGlobalObjectHelper.getGlobalObject();
-        globalObject.setBanksEnum(messageModel.getBanksEnum());
+
 
         SmsNumberAlert smsNumberAlert=alertService
                 .getByAlertNumber(messageModel.getNumberAlert());
+        globalObject.setBanksEnum(smsNumberAlert.getBanks());
 
-        Recipients recipients=new Recipients();
         for (String message:messageModel.getData()){
-
+            Recipients recipients=new Recipients();
             try {
-                MessageInfo messageInfo=builder.getInstance().getMessage(message,messageModel.getNumberAlert());
+                MessageInfo messageInfo=builder.getInstance(smsNumberAlert.getBanks()).getMessage(message,messageModel.getNumberAlert());
                 recipients.setMessageInfo(messageInfo);
                 recipients.setSmsNumberAlert(smsNumberAlert);
                 recipients.setUser(messageModel.getUser());
             } catch (ServiceException e) {
                 throw new RuntimeException(e);
             }
+            repository.save(recipients);
+
         }
-        return false;
+        return true;
     }
 }

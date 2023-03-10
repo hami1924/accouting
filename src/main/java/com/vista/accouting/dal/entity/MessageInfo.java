@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
@@ -15,7 +16,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class MessageInfo {
 
-    private LocalTime date;
+    private LocalDate date;
 
     private String messageHash;
 

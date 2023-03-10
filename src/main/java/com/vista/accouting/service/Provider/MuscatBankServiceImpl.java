@@ -3,6 +3,8 @@ package com.vista.accouting.service.Provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vista.accouting.dal.entity.MessageInfo;
 import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.MessageType;
@@ -10,8 +12,6 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -21,11 +21,13 @@ import java.util.regex.Pattern;
 public class MuscatBankServiceImpl implements BankService {
 
     private final String PATTERN_DATE = "([0-9]+(/[0-9]+)+)";
-    private final String CARD_NUMBER = "X+";
+    private final String CARD_NUMBER = "[0-9][0-9][0-9][0-9]X+[0-9][0-9][0-9][0-9]";
     private final String VALUE_PATTERN = "[0-9]*\\.[0-9]+";
 
 
-    private final String beforPattern = "^.*?(?=your a/c)";
+    private final String beforPatternCredit = "^.*?(?=your a/c)";
+    private final String beforePatternWithdrawn = "^.*?(?=at)";
+    private final String beforePatternWithdrawnATM = "^.*?(?=through)";
 
 
     @Override
@@ -40,8 +42,8 @@ public class MuscatBankServiceImpl implements BankService {
         muscatBankModel.setCardNumber(getPattern(originalMessage, CARD_NUMBER));
         String dateOperation=getPattern(originalMessage, PATTERN_DATE);
         muscatBankModel.setOperationDate(dateOperation);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        LocalTime dateTime = LocalTime.parse(dateOperation, formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateTime = LocalDate.parse(dateOperation, formatter);
         muscatBankModel.setDate(dateTime);
         muscatBankModel.setSmsNumberAlert(smsAlert);
 //        Pattern pattern = Pattern.compile(regex);
@@ -51,17 +53,29 @@ public class MuscatBankServiceImpl implements BankService {
 
         if (originalMessage.contains("credited")) {
             muscatBankModel.setMessageType(MessageType.CREDIT);
-            muscatBankModel.setAmount(Float.parseFloat(getPattern(originalMessage
+            muscatBankModel.setBalanceValue(Float.parseFloat(getPattern(originalMessage
                     .substring(originalMessage.indexOf("your a/c")), VALUE_PATTERN)));
-            String partToBalance = getPattern(originalMessage, beforPattern);
-            muscatBankModel.setBalanceValue(getPattern(partToBalance, VALUE_PATTERN));
+            String partToBalance = getPattern(originalMessage, beforPatternCredit);
+            muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
 
         } else if (originalMessage.contains("withdrawn")) {
 
-        } else if (originalMessage.contains("Card of a/c")) {
+            muscatBankModel.setMessageType(MessageType.WITHDRAW);
+            muscatBankModel.setBalanceValue(Float.parseFloat(getPattern(originalMessage
+                    .substring(originalMessage.indexOf("through")), VALUE_PATTERN)));
+            String partToBalance = getPattern(originalMessage, beforePatternWithdrawnATM);
+            muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
 
+        } else if (originalMessage.contains("Card of a/c")) {
+            muscatBankModel.setMessageType(MessageType.WITHDRAW);
+            muscatBankModel.setBalanceValue(Float.parseFloat(getPattern(originalMessage
+                    .substring(originalMessage.indexOf("at")), VALUE_PATTERN)));
+            String partToBalance = getPattern(originalMessage, beforePatternWithdrawn);
+            muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
         }
-        ObjectMapper objectMapper=new ObjectMapper();
+        ObjectMapper objectMapper= JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
         String result=null;
         try {
              result=objectMapper.writeValueAsString(muscatBankModel);
@@ -89,7 +103,7 @@ public class MuscatBankServiceImpl implements BankService {
         private String cardNumber;
         private String operationDate;
 //        private String currentValue;
-        private String BalanceValue;
+        private Float BalanceValue;
         private String place;
 //        private MessageType messageType;
         private String smsNumberAlert;
