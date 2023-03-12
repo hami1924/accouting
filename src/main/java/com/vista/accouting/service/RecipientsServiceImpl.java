@@ -8,9 +8,13 @@ import com.vista.accouting.dal.entity.SmsNumberAlert;
 import com.vista.accouting.dal.repo.RecipientsRepository;
 import com.vista.accouting.exceptions.ServiceException;
 import com.vista.accouting.service.models.Message;
+import com.vista.accouting.service.models.MessageQuery;
+import com.vista.accouting.service.models.MessageView;
 import com.vista.accouting.service.patterns.PatternRecognizedBuilder;
 import com.vista.accouting.service.patterns.PatternRecognizedDecider;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @Component
@@ -56,5 +60,10 @@ public class RecipientsServiceImpl implements RecipientsService{
 
         }
         return true;
+    }
+
+    @Override
+    public List<MessageView> messageList(MessageQuery messageQuery) {
+        return null;
     }
 }
