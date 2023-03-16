@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface RecipientsRepository extends MongoRepository<Recipients,String> {
+public interface RecipientsRepository extends MongoRepository<Recipients,String> , CustomRecipientsRepository {
 
 
 }

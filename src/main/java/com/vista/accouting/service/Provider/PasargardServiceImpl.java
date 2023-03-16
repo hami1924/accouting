@@ -1,6 +1,7 @@
 package com.vista.accouting.service.Provider;
 
 import com.vista.accouting.dal.entity.MessageInfo;
+import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.enums.BanksEnum;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class PasargardServiceImpl implements BankService{
     }
 
     @Override
-    public MessageInfo getMessage(String originalMessage, String smsAlert) {
+    public Recipients getMessage(String originalMessage, String smsAlert, Recipients recipients) {
         return null;
     }
 }

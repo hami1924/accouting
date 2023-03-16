@@ -4,6 +4,7 @@ package com.vista.accouting.controller;
 import com.vista.accouting.dal.entity.User;
 import com.vista.accouting.exceptions.ServiceException;
 import com.vista.accouting.service.UserService;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class UserController extends BaseController{
     @GetMapping("/{id}")
 //    @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @ExceptionHandler({ ChangeSetPersister.NotFoundException.class })
     public User findById(@PathVariable String id){
         Optional<User> user= userService.getById(id);
         return user.get();

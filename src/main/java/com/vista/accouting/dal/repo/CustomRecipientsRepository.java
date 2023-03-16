@@ -10,5 +10,6 @@ import java.util.List;
 public interface CustomRecipientsRepository {
 
     Page<Recipients> findByQueryCustom(MessageQuery messageQuery, Pageable pageable);
+    List<Recipients> findByQueryCustomWithoutPageable(MessageQuery messageQuery);
 
 }

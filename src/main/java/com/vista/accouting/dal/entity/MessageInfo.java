@@ -18,14 +18,14 @@ public class MessageInfo {
 
     private LocalDate date;
 
-    private String messageHash;
+//    private String messageHash;
 
     private MessageType messageType;
 
     private Float amount;
 
-    private String metaData;
+//    private String metaData;
 
-    private String originalDataBase64;
+//    private String originalDataBase64;
 
 }

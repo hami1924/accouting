@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vista.accouting.dal.entity.MessageInfo;
+import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.MessageType;
 import lombok.Data;
@@ -36,20 +37,14 @@ public class MuscatBankServiceImpl implements BankService {
     }
 
     @Override
-    public MessageInfo getMessage(String originalMessage, String smsAlert) {
-        MuscatBankModel muscatBankModel = new MuscatBankModel();
+    public Recipients getMessage(String originalMessage, String smsAlert, Recipients muscatBankModel) {
 
         muscatBankModel.setCardNumber(getPattern(originalMessage, CARD_NUMBER));
-        String dateOperation=getPattern(originalMessage, PATTERN_DATE);
+        String dateOperation = getPattern(originalMessage, PATTERN_DATE);
         muscatBankModel.setOperationDate(dateOperation);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dateTime = LocalDate.parse(dateOperation, formatter);
         muscatBankModel.setDate(dateTime);
-        muscatBankModel.setSmsNumberAlert(smsAlert);
-//        Pattern pattern = Pattern.compile(regex);
-//        Matcher matcher = pattern.matcher(originalMessage);
-//        Pattern patternCartNumber = Pattern.compile(CARD_NUMBER);
-//        if (matcher.find())
 
         if (originalMessage.contains("credited")) {
             muscatBankModel.setMessageType(MessageType.CREDIT);
@@ -73,15 +68,15 @@ public class MuscatBankServiceImpl implements BankService {
             String partToBalance = getPattern(originalMessage, beforePatternWithdrawn);
             muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
         }
-        ObjectMapper objectMapper= JsonMapper.builder()
+        ObjectMapper objectMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
-        String result=null;
+        String result = null;
         try {
-             result=objectMapper.writeValueAsString(muscatBankModel);
-             muscatBankModel.setMetaData(result);
+            result = objectMapper.writeValueAsString(muscatBankModel);
+            muscatBankModel.setMetaData(result);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new InternalError();
         }
         return muscatBankModel;
     }
@@ -98,14 +93,4 @@ public class MuscatBankServiceImpl implements BankService {
     }
 
 
-    @Data
-    class MuscatBankModel extends MessageInfo {
-        private String cardNumber;
-        private String operationDate;
-//        private String currentValue;
-        private Float BalanceValue;
-        private String place;
-//        private MessageType messageType;
-        private String smsNumberAlert;
-    }
 }
