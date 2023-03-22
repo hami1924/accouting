@@ -3,6 +3,7 @@ package com.vista.accouting.controller;
 import com.vista.accouting.controller.adpter.MessageDtoAdapter;
 import com.vista.accouting.controller.dto.MessageDto;
 import com.vista.accouting.dal.entity.Recipients;
+import com.vista.accouting.service.models.DefaultPageModel;
 import com.vista.accouting.service.models.MessageQuery;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,12 @@ public class RecipientsController extends BaseController{
 
     @PostMapping("/messages")
     @ExceptionHandler({  AccountNotFoundException.class})
-    public Page<Recipients> listMessage(@RequestBody MessageQuery messageQuery) throws AccountNotFoundException {
+    public Page<Recipients> listMessage(@RequestBody MessageQuery messageQuery)  {
         return messageDtoAdapter.listMessage(messageQuery);
+    }
+
+    @PostMapping("/default/page")
+    public DefaultPageModel defaultPage(@RequestBody MessageQuery messageQuery)  {
+        return messageDtoAdapter.defaultPage(messageQuery);
     }
 }

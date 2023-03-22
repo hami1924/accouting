@@ -2,6 +2,7 @@ package com.vista.accouting.dal.repo;
 
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.service.models.MessageQuery;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +47,14 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
 
     private Query conditionQuery(Query query,MessageQuery messageQuery){
 
+        query.addCriteria(Criteria.where("user._id").is(new ObjectId(messageQuery.getUserId())));
+
         if (!Objects.isNull(messageQuery.getMessageType())) {
             query.addCriteria(Criteria.where("messageType").is(messageQuery.getMessageType().toString()));
+        }
+
+        if (!Objects.isNull(messageQuery.getCurrencyType())) {
+            query.addCriteria(Criteria.where("currency").is(messageQuery.getCurrencyType().toString()));
         }
 
         if (!Objects.isNull(messageQuery.getBanksEnum())) {

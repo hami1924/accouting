@@ -5,8 +5,10 @@ import com.vista.accouting.controller.dto.MessageDto;
 import com.vista.accouting.controller.mapper.MessageDtoMapper;
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.dal.entity.User;
+import com.vista.accouting.exceptions.NotFoundUserException;
 import com.vista.accouting.service.RecipientsService;
 import com.vista.accouting.service.UserService;
+import com.vista.accouting.service.models.DefaultPageModel;
 import com.vista.accouting.service.models.Message;
 import com.vista.accouting.service.models.MessageQuery;
 import lombok.SneakyThrows;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -49,10 +52,21 @@ public class MessageDtoAdapter {
     }
 
 
-    public Page<Recipients> listMessage(MessageQuery messageQuery) throws AccountNotFoundException {
+    public Page<Recipients> listMessage(MessageQuery messageQuery) {
         Optional<User> user=userService.getById(messageQuery.getUserId());
         if (!user.isPresent())
-            throw new AccountNotFoundException();
+            throw new NotFoundUserException();
         return recipientsService.messageList(messageQuery);
+    }
+
+    public DefaultPageModel defaultPage(MessageQuery messageQuery)  {
+        Optional<User> user=userService.getById(messageQuery.getUserId());
+        if (!user.isPresent())
+            throw new NotFoundUserException();
+
+        if (Objects.isNull(messageQuery.getCurrencyType()))
+            throw new NotFoundUserException();
+
+        return recipientsService.firstPage(messageQuery);
     }
 }

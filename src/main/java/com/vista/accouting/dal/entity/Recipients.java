@@ -30,6 +30,7 @@ public class Recipients extends Entity {
     private String operationDate;
     private Float BalanceValue;
     private String place;
+    private String currency;
 
 
     private User user;
@@ -38,7 +39,6 @@ public class Recipients extends Entity {
     private SmsNumberAlert smsNumberAlert;
 
 //    private MessageInfo messageInfo;
-
 
 
 }

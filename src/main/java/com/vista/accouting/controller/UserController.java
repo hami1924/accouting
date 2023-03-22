@@ -2,12 +2,12 @@ package com.vista.accouting.controller;
 
 
 import com.vista.accouting.dal.entity.User;
-import com.vista.accouting.exceptions.ServiceException;
 import com.vista.accouting.service.UserService;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.Optional;
 
 @RestController
@@ -22,15 +22,15 @@ public class UserController extends BaseController{
     @PostMapping()
     @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User insertUser( User user) throws ServiceException {
+    public User insertUser( User user)  {
         return userService.insert(user);
     }
 
 
     @GetMapping("/{id}")
-//    @ResponseBody
+    @ResponseBody
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @ExceptionHandler({ ChangeSetPersister.NotFoundException.class })
+
     public User findById(@PathVariable String id){
         Optional<User> user= userService.getById(id);
         return user.get();

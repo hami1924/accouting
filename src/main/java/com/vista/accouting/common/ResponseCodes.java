@@ -12,8 +12,8 @@ public class ResponseCodes {
     public static final String EXCEED_WITHDRAWAL = "007";
     public static final String INVALID_ENDPOINT = "008";
     public static final String IMPROPER_TRANSACTION_STATE = "009";
-    public static final String INVALID_REFERENCE = "010";
-    public static final String ILLEGAL_DESTINATION_BANK = "011";
+    public static final String NOT_FOUND_USER = "010";
+    public static final String FOUND_USER_REPLECATION = "011";
     public static final String INCORRECT_CUSTOMER_INFORMATION = "012";
     public static final String INVALID_IBAN = "013";
     public static final String SECURITY = "014";

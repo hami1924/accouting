@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vista.accouting.dal.entity.MessageInfo;
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.enums.BanksEnum;
+import com.vista.accouting.enums.CurrencyType;
 import com.vista.accouting.enums.MessageType;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,8 @@ public class MuscatBankServiceImpl implements BankService {
     private final String beforePatternWithdrawn = "^.*?(?=at)";
     private final String beforePatternWithdrawnATM = "^.*?(?=through)";
 
+    private final String CURRENCY="RIAL-OMAN";
+
 
     @Override
     public boolean support(BanksEnum banksEnum) {
@@ -45,6 +48,7 @@ public class MuscatBankServiceImpl implements BankService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dateTime = LocalDate.parse(dateOperation, formatter);
         muscatBankModel.setDate(dateTime);
+        muscatBankModel.setCurrency(CurrencyType.RIAL_OMAN.toString());
 
         if (originalMessage.contains("credited")) {
             muscatBankModel.setMessageType(MessageType.CREDIT);

@@ -30,6 +30,30 @@ public class GlobalExceptionHandler {
 
     final private GeneralExceptionTranslator generalExceptionTranslator;
 
+
+
+
+    @ExceptionHandler(NotFoundUserException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity NotFoundUserExceptionHandler(NotFoundUserException e) throws ServiceException {
+        AtomicReference<String> errorMessages = new AtomicReference(0);
+        AtomicReference<String> codeMessage = new AtomicReference(10);
+        ServiceException serviceException = generalExceptionTranslator
+                .mapException(codeMessage.toString(), errorMessages.toString(), ServiceExceptionType.Bad_Request);
+        return ConvertErrorToReponseEroor(serviceException);
+    }
+
+    @ExceptionHandler(UserFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity FoundUserExceptionHandler(UserFoundException e) throws ServiceException {
+        AtomicReference<String> errorMessages = new AtomicReference(0);
+        AtomicReference<String> codeMessage = new AtomicReference(11);
+        ServiceException serviceException = generalExceptionTranslator
+                .mapException(codeMessage.toString(), errorMessages.toString(), ServiceExceptionType.Bad_Request);
+        return ConvertErrorToReponseEroor(serviceException);
+    }
     @SneakyThrows
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

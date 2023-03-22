@@ -24,8 +24,8 @@ public class MessageInfo {
 
     private Float amount;
 
-//    private String metaData;
+    private String metaData;
 
-//    private String originalDataBase64;
+    private String originalDataBase64;
 
 }

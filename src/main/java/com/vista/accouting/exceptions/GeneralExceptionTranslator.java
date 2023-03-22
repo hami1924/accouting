@@ -19,12 +19,12 @@ public class GeneralExceptionTranslator extends ExceptionTranslatorBase {
             ServiceExceptionType exceptionType) {
         info = errorMessage;
         switch (fieldReject) {
-            case "nationalCode":
-                code = ResponseCodes.INVALID_NATIONAL_CODE;
+            case "10":
+                code = ResponseCodes.NOT_FOUND_USER;
                 exceptionType = ServiceExceptionType.Bad_Request;
                 break;
-            case "mobilePhone":
-                code = ResponseCodes.INVALID_MOBILE_NUMBER;
+            case "11":
+                code = ResponseCodes.FOUND_USER_REPLECATION;
                 exceptionType = ServiceExceptionType.Bad_Request;
                 break;
             case "mobile":
