@@ -1,5 +1,5 @@
 FROM openjdk:17-oracle
-MAINTAINER PERSONAL-ACCOUNTING
+MAINTAINER RECLOY
 COPY target/accouting-0.0.1-SNAPSHOT.jar /accouting-0.0.1-SNAPSHOT.jar
 RUN #apt-get update && apt-get install librrds-perl rrdtool -y
 # update sources

@@ -12,6 +12,7 @@ import com.vista.accouting.service.models.DefaultPageModel;
 import com.vista.accouting.service.models.Message;
 import com.vista.accouting.service.models.MessageQuery;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class MessageDtoAdapter {
     private final RecipientsService recipientsService;
 

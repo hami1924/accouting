@@ -14,5 +14,4 @@ import java.util.List;
 @Repository
 public interface RecipientsRepository extends MongoRepository<Recipients,String> , CustomRecipientsRepository {
 
-        List<Recipients> findByUser_IdAndMessageHash(ObjectId user, String hashMessage);
 }

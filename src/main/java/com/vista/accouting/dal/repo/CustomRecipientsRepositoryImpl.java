@@ -45,6 +45,12 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
         return mongoTemplate.find(query, Recipients.class);
     }
 
+    @Override
+    public List<Recipients> findUserIdAndMessageHash(ObjectId user, String hashMessage) {
+        Query query = new Query();
+        query=conditionQuery(query,user,hashMessage);
+        return mongoTemplate.find(query, Recipients.class);    }
+
     private Query conditionQuery(Query query,MessageQuery messageQuery){
 
         query.addCriteria(Criteria.where("user._id").is(new ObjectId(messageQuery.getUserId())));
@@ -71,6 +77,17 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
             }
         }
         return query;
+
+    }
+
+    private Query conditionQuery(Query query,ObjectId user, String hashMessage) {
+
+        query.addCriteria(Criteria.where("user.id").is(user));
+
+
+            query.addCriteria(Criteria.where("messageHash").is(hashMessage));
+
+            return query;
 
     }
 }

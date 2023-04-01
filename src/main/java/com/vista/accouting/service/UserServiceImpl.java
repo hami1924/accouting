@@ -26,8 +26,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User insert(User user)  {
-        List<User> userOld=userRepository.findByMobileOrImei(user.getMobile(),user.getImei());
-        if (userOld.size()>1)
+        Optional<User> userOld=userRepository.findByImei(user.getImei());
+        if (userOld.isPresent())
              throw new UserFoundException();
         return userRepository.save(user);
     }

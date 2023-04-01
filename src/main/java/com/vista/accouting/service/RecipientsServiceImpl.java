@@ -11,6 +11,7 @@ import com.vista.accouting.service.models.*;
 import com.vista.accouting.service.patterns.PatternRecognizedBuilder;
 import com.vista.accouting.service.patterns.PatternRecognizedDecider;
 import com.vista.accouting.util.log.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.Objects;
 
 
 @Component
+@Slf4j
 public class RecipientsServiceImpl implements RecipientsService {
 
     private final PatternRecognizedDecider patternRecognizedDecider;
@@ -52,7 +54,7 @@ public class RecipientsServiceImpl implements RecipientsService {
 
         for (String message : messageModel.getData()) {
             String hashMessage=Utils.HashSha128(message);
-            List<Recipients> list=repository.findByUser_IdAndMessageHash(new ObjectId(messageModel.getUser().getId()),hashMessage);
+            List<Recipients> list=repository.findUserIdAndMessageHash(new ObjectId(messageModel.getUser().getId()),hashMessage);
             if (list.size()>0)
                 continue;
             Recipients recipients = new Recipients();
@@ -61,9 +63,11 @@ public class RecipientsServiceImpl implements RecipientsService {
 //                recipients.setMessageInfo(messageInfo);
                 recipients.setSmsNumberAlert(smsNumberAlert);
                 recipients.setUser(messageModel.getUser());
-                recipients.setMessageHash(Utils.HashSha128(hashMessage));
-            } catch (ServiceException e) {
-                throw new RuntimeException("message not to able procsess");
+                recipients.setMessageHash(hashMessage);
+            } catch (Exception e) {
+                log.error("message not to able procsess user: " +messageModel.getUser().getId() + " hashMessage :"+ hashMessage);
+//                throw new RuntimeException("message not to able procsess");
+                continue;
             }
             repository.save(recipients);
 

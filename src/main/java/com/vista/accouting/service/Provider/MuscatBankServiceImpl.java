@@ -10,6 +10,7 @@ import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.CurrencyType;
 import com.vista.accouting.enums.MessageType;
+import com.vista.accouting.exceptions.NotFoundUserException;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -71,6 +72,8 @@ public class MuscatBankServiceImpl implements BankService {
                     .substring(originalMessage.indexOf("at")), VALUE_PATTERN)));
             String partToBalance = getPattern(originalMessage, beforePatternWithdrawn);
             muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
+        }else {
+            throw new NotFoundUserException();
         }
         ObjectMapper objectMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())

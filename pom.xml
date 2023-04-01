@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.vista</groupId>
-    <artifactId>accouting</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>accouting</name>
-    <description>accouting</description>
+    <artifactId>recloy</artifactId>
+    <version>0.0.1</version>
+    <name>recloy</name>
+    <description>recloy</description>
     <properties>
         <java.version>11</java.version>
     </properties>
