@@ -93,7 +93,7 @@ public class RecipientsServiceImpl implements RecipientsService {
 
         DefaultPageModel.DetailPay detailPay=defaultPageModel.new DetailPay();
 
-        detailPay.setCurrency(detailPayWithdraw.getCurrency());
+        detailPay.setCurrency(Objects.nonNull(detailPayWithdraw.getCurrency())?detailPayWithdraw.getCurrency():"RIAL-OMAN");
         detailPay.setWithdraw(detailPayWithdraw.getWithdraw());
         detailPay.setCerdit(detailPayDeposit.getCerdit());
 

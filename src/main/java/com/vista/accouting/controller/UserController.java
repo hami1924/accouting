@@ -21,7 +21,7 @@ public class UserController extends BaseController{
 
     @PostMapping()
     @ResponseBody
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public User insertUser( User user)  {
         return userService.insert(user);
     }
@@ -29,8 +29,7 @@ public class UserController extends BaseController{
 
     @GetMapping("/{id}")
     @ResponseBody
-    @ResponseStatus(HttpStatus.ACCEPTED)
-
+    @ResponseStatus(HttpStatus.OK)
     public User findById(@PathVariable String id){
         Optional<User> user= userService.getById(id);
         return user.get();
@@ -38,7 +37,7 @@ public class UserController extends BaseController{
 
     @GetMapping("/{imei}/imei")
     @ResponseBody
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public Optional<User> findByImei(@PathVariable String imei) {
         return userService.getByImei(imei);
     }
