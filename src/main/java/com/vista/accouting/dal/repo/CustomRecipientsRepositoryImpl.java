@@ -1,19 +1,27 @@
 package com.vista.accouting.dal.repo;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.service.models.MessageQuery;
+import com.vista.accouting.service.models.TagDefaultPageModel;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
+import static com.mongodb.client.model.Filters.*;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Component
 public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepository{
@@ -51,6 +59,21 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
         query=conditionQuery(query,user,hashMessage);
         return mongoTemplate.find(query, Recipients.class);    }
 
+    @Override
+    public List<TagDefaultPageModel> findUniqueTagByGroup(String userId) {
+        List<TagDefaultPageModel> list=new ArrayList<>();
+        MatchOperation aggregationOperation_Match =Aggregation.match(Criteria.where("user._id").is(new ObjectId(userId)));
+        GroupOperation aggregationOperation_Size = Aggregation.group("$tag.name").count().as("count");
+        Aggregation aggregation =Aggregation.newAggregation(aggregationOperation_Match,aggregationOperation_Size);
+        AggregationResults<Document> results = mongoTemplate.aggregate( aggregation,Recipients.class,Document.class);
+        for (Document document:results.getMappedResults()){
+                        TagDefaultPageModel tagDefaultPageModel=new TagDefaultPageModel(
+                    (String) document.get("_id"),(Integer)document.get("count"));
+            list.add(tagDefaultPageModel);
+        }
+        return list;
+    }
+
     private Query conditionQuery(Query query,MessageQuery messageQuery){
 
         query.addCriteria(Criteria.where("user._id").is(new ObjectId(messageQuery.getUserId())));
@@ -61,6 +84,10 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
 
         if (!Objects.isNull(messageQuery.getCurrencyType())) {
             query.addCriteria(Criteria.where("currency").is(messageQuery.getCurrencyType().toString()));
+        }
+
+        if (!Objects.isNull(messageQuery.getTag())) {
+            query.addCriteria(Criteria.where("tag.name").is(messageQuery.getTag()));
         }
 
         if (!Objects.isNull(messageQuery.getBanksEnum())) {

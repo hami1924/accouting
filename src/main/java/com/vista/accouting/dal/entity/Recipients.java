@@ -50,6 +50,8 @@ public class Recipients extends Entity {
     // be sorat kamel nabayad inja base modelash. bayad ye model kochak shode inja  base
     private SmsNumberAlert smsNumberAlert;
 
+    private TagEntity tag;
+
 //    private MessageInfo messageInfo;
 
 

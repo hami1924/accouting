@@ -5,13 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.vista.accouting.dal.entity.MessageInfo;
 import com.vista.accouting.dal.entity.Recipients;
+import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.CurrencyType;
 import com.vista.accouting.enums.MessageType;
+import com.vista.accouting.enums.TagType;
 import com.vista.accouting.exceptions.NotFoundUserException;
-import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -32,7 +32,7 @@ public class MuscatBankServiceImpl implements BankService {
     private final String beforePatternWithdrawn = "^.*?(?=at)";
     private final String beforePatternWithdrawnATM = "^.*?(?=through)";
 
-    private final String CURRENCY="RIAL-OMAN";
+    private final String CURRENCY="OMR";
 
 
     @Override
@@ -49,7 +49,7 @@ public class MuscatBankServiceImpl implements BankService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dateTime = LocalDate.parse(dateOperation, formatter);
         muscatBankModel.setDate(dateTime);
-        muscatBankModel.setCurrency(CurrencyType.RIAL_OMAN.toString());
+        muscatBankModel.setCurrency(CurrencyType.OMR.toString());
 
         if (originalMessage.contains("credited")) {
             muscatBankModel.setMessageType(MessageType.CREDIT);
@@ -65,6 +65,8 @@ public class MuscatBankServiceImpl implements BankService {
                     .substring(originalMessage.indexOf("through")), VALUE_PATTERN)));
             String partToBalance = getPattern(originalMessage, beforePatternWithdrawnATM);
             muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
+            muscatBankModel.setTag(new TagEntity("CASH","en",
+                    TagType.GENERAL,muscatBankModel.getUser().getId()));
 
         } else if (originalMessage.contains("Card of a/c")) {
             muscatBankModel.setMessageType(MessageType.WITHDRAW);

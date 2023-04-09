@@ -32,4 +32,6 @@ public class MessageQuery extends PageCustomModel{
     private String userId;
 
     private CurrencyType currencyType ;
+
+    private String tag;
 }

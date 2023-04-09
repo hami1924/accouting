@@ -4,6 +4,7 @@ import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.dal.repo.TagRepository;
 import com.vista.accouting.enums.TagType;
 import com.vista.accouting.exceptions.NotFoundUserException;
+import com.vista.accouting.service.models.TagDefaultPageModel;
 import org.bson.BSONObject;
 import org.springframework.stereotype.Component;
 
@@ -69,4 +70,13 @@ public class TagServiceImpl implements TagService {
     public void deleteById(String id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public TagEntity findTagInContent(String userId, String content) {
+        List<TagEntity> list=repository.findByUserIdOrAndTagType(userId, TagType.GENERAL.name());
+
+        return null;
+    }
+
+
 }

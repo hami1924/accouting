@@ -4,9 +4,10 @@ import com.vista.accouting.aspect.globalObject.GlobalObject;
 import com.vista.accouting.aspect.globalObject.SynchronizedGlobalObjectHelper;
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.dal.entity.SmsNumberAlert;
+import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.dal.repo.RecipientsRepository;
 import com.vista.accouting.enums.MessageType;
-import com.vista.accouting.exceptions.ServiceException;
+import com.vista.accouting.enums.TagType;
 import com.vista.accouting.service.models.*;
 import com.vista.accouting.service.patterns.PatternRecognizedBuilder;
 import com.vista.accouting.service.patterns.PatternRecognizedDecider;
@@ -34,12 +35,15 @@ public class RecipientsServiceImpl implements RecipientsService {
 
     private final SmsNumberAlertService alertService;
 
+    private final TagService tagService;
 
-    public RecipientsServiceImpl(PatternRecognizedDecider patternRecognizedDecider, PatternRecognizedBuilder builder, RecipientsRepository repository, SmsNumberAlertService alertService) {
+
+    public RecipientsServiceImpl(PatternRecognizedDecider patternRecognizedDecider, PatternRecognizedBuilder builder, RecipientsRepository repository, SmsNumberAlertService alertService, TagService tagService) {
         this.patternRecognizedDecider = patternRecognizedDecider;
         this.builder = builder;
         this.repository = repository;
         this.alertService = alertService;
+        this.tagService = tagService;
     }
 
 
@@ -52,20 +56,22 @@ public class RecipientsServiceImpl implements RecipientsService {
                 .getByAlertNumber(messageModel.getNumberAlert());
         globalObject.setBanksEnum(smsNumberAlert.getBanks());
 
+        List<TagEntity> tagEntityList = tagService.list(messageModel.getUser().getId());
+
         for (String message : messageModel.getData()) {
-            String hashMessage=Utils.HashSha128(message);
-            List<Recipients> list=repository.findUserIdAndMessageHash(new ObjectId(messageModel.getUser().getId()),hashMessage);
-            if (list.size()>0)
+            String hashMessage = Utils.HashSha128(message);
+            List<Recipients> list = repository.findUserIdAndMessageHash(new ObjectId(messageModel.getUser().getId()), hashMessage);
+            if (list.size() > 0)
                 continue;
             Recipients recipients = new Recipients();
+            recipients.setSmsNumberAlert(smsNumberAlert);
+            recipients.setUser(messageModel.getUser());
+            recipients.setMessageHash(hashMessage);
             try {
                 recipients = builder.getInstance(smsNumberAlert.getBanks()).getMessage(message, messageModel.getNumberAlert(), recipients);
-//                recipients.setMessageInfo(messageInfo);
-                recipients.setSmsNumberAlert(smsNumberAlert);
-                recipients.setUser(messageModel.getUser());
-                recipients.setMessageHash(hashMessage);
+                addTagToRecipients(recipients, message, tagEntityList, messageModel);
             } catch (Exception e) {
-                log.error("message not to able procsess user: " +messageModel.getUser().getId() + " hashMessage :"+ hashMessage);
+                log.error("message not to able procsess user: " + messageModel.getUser().getId() + " hashMessage :" + hashMessage);
 //                throw new RuntimeException("message not to able procsess");
                 continue;
             }
@@ -74,6 +80,7 @@ public class RecipientsServiceImpl implements RecipientsService {
         }
         return true;
     }
+
 
     @Override
     public Page<Recipients> messageList(MessageQuery messageQuery) {
@@ -87,21 +94,42 @@ public class RecipientsServiceImpl implements RecipientsService {
         defaultPageModel.setFrom(messageQuery.getFrom());
         defaultPageModel.setTo(messageQuery.getTo());
         defaultPageModel.setList(new ArrayList<>());
+        // get withdraw and credit
+        DefaultPageModel.DetailPay detailPayWithdraw = getAmountWithMessageType(messageQuery, MessageType.WITHDRAW, defaultPageModel);
+        DefaultPageModel.DetailPay detailPayDeposit = getAmountWithMessageType(messageQuery, MessageType.CREDIT, defaultPageModel);
 
-        DefaultPageModel.DetailPay detailPayWithdraw=getAmountWithMessageType(messageQuery,MessageType.WITHDRAW,defaultPageModel);
-        DefaultPageModel.DetailPay detailPayDeposit=getAmountWithMessageType(messageQuery,MessageType.CREDIT,defaultPageModel);
+        DefaultPageModel.DetailPay detailPay = defaultPageModel.new DetailPay();
 
-        DefaultPageModel.DetailPay detailPay=defaultPageModel.new DetailPay();
-
-        detailPay.setCurrency(Objects.nonNull(detailPayWithdraw.getCurrency())?detailPayWithdraw.getCurrency():"RIAL-OMAN");
+        detailPay.setCurrency(Objects.nonNull(detailPayWithdraw.getCurrency()) ? detailPayWithdraw.getCurrency() : "OMR");
         detailPay.setWithdraw(detailPayWithdraw.getWithdraw());
         detailPay.setCerdit(detailPayDeposit.getCerdit());
 
+        // get tagList
+        List<TagDefaultPageModel> list = getTagList(messageQuery);
         defaultPageModel.getList().add(detailPay);
+        defaultPageModel.setTagList(list);
         return defaultPageModel;
     }
 
-    private DefaultPageModel.DetailPay getAmountWithMessageType(MessageQuery messageQuery ,MessageType messageType,DefaultPageModel defaultPageModel){
+    @Override
+    public List<TagDefaultPageModel> listTagForDefaultPage(String userId) {
+        List<TagDefaultPageModel> list = repository.findUniqueTagByGroup(userId);
+        Integer generalSize = 0;
+        for (TagDefaultPageModel sizeTag : list) {
+            generalSize += sizeTag.getCount();
+        }
+        for (TagDefaultPageModel addPersent : list) {
+            Double per = (Double.valueOf(addPersent.getCount()) / generalSize) * 100;
+            addPersent.setPercent(per);
+        }
+        return list;
+    }
+
+    private List<TagDefaultPageModel> getTagList(MessageQuery messageQuery) {
+        return listTagForDefaultPage(messageQuery.getUserId());
+    }
+
+    private DefaultPageModel.DetailPay getAmountWithMessageType(MessageQuery messageQuery, MessageType messageType, DefaultPageModel defaultPageModel) {
         MessageQuery messageQueryWithdraw = new MessageQuery();
         messageQueryWithdraw.setFrom(messageQuery.getFrom());
         messageQueryWithdraw.setTo(messageQuery.getTo());
@@ -111,19 +139,30 @@ public class RecipientsServiceImpl implements RecipientsService {
         messageQueryWithdraw.setCurrencyType(messageQuery.getCurrencyType());
         List<Recipients> recipientsList = repository.findByQueryCustomWithoutPageable(messageQueryWithdraw);
         Float amountSum = 0F;
+        Float cash = 0F;
+        Float debit = 0F;
         for (Recipients recipients : recipientsList) {
-            if (Objects.nonNull(recipients.getAmount()))
+            if (Objects.nonNull(recipients.getAmount())) {
                 amountSum = amountSum + recipients.getAmount();
+            }
+            if (Objects.nonNull(recipients.getAmount())) {
+                if (Objects.nonNull(recipients.getTag()) && recipients.getTag().getName().equals("CASH")){
+                    cash = cash + recipients.getAmount();
+                }else {
+                    debit = debit + recipients.getAmount();
+                }
+            }
         }
 //        DefaultPageModel defaultPageModelWithDraw = new DefaultPageModel();
         DefaultPageModel.DetailPay detailPay = defaultPageModel.new DetailPay();
-        if(recipientsList.size()>0)
-        detailPay.setCurrency(recipientsList.get(0).getCurrency());
+        if (recipientsList.size() > 0)
+            detailPay.setCurrency(recipientsList.get(0).getCurrency());
 
         if (messageType.equals(MessageType.WITHDRAW)) {
-            detailPay.setWithdraw(setAmountWitWithdraw(amountSum, defaultPageModel));
-        }else if(messageType.equals(MessageType.CREDIT)){
-        detailPay.setCerdit(setAmountWitDeposit(amountSum,defaultPageModel));
+            detailPay.setWithdraw(setAmountWitWithdraw(amountSum, defaultPageModel,cash,debit));
+
+        } else if (messageType.equals(MessageType.CREDIT)) {
+            detailPay.setCerdit(setAmountWitDeposit(amountSum, defaultPageModel));
 
         }
         return detailPay;
@@ -135,9 +174,32 @@ public class RecipientsServiceImpl implements RecipientsService {
         return deposit;
     }
 
-    private DefaultPageModel.Withdraw setAmountWitWithdraw(Float amountSum,DefaultPageModel defaultPageModel) {
+    private DefaultPageModel.Withdraw setAmountWitWithdraw(Float amountSum, DefaultPageModel defaultPageModel
+            ,Float cash,Float debit) {
         DefaultPageModel.Withdraw withdraw = defaultPageModel.new Withdraw();
         withdraw.setAmount(amountSum);
+        withdraw.setCash(cash);
+        withdraw.setDebit(debit);
         return withdraw;
+    }
+
+    private void addTagToRecipients(Recipients recipients, String message, List<TagEntity> tagEntityList, Message messageModel) {
+        if (Objects.isNull(recipients.getTag())) {
+            try {
+                for (TagEntity tag : tagEntityList) {
+                    Boolean exist = message.contains(tag.getName());
+                    if (exist) {
+                        recipients.setTag(tag);
+                        return;
+                    }
+                }
+                recipients.setTag(new TagEntity("UNKNOWN", "en",
+                        TagType.GENERAL, messageModel.getUser().getId()));
+            } catch (Exception e) {
+                recipients.setTag(new TagEntity("UNKNOWN", "en",
+                        TagType.GENERAL, messageModel.getUser().getId()));
+            }
+        }
+
     }
 }

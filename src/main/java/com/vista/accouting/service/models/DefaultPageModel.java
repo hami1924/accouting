@@ -1,7 +1,6 @@
 package com.vista.accouting.service.models;
 
 
-
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -12,20 +11,25 @@ public class DefaultPageModel {
 
     LocalDate from;
     LocalDate to;
-     List<DetailPay> list;
+    List<DetailPay> list;
+    List<TagDefaultPageModel> tagList;
     @Data
-    public class DetailPay{
+    public class DetailPay {
 
         private String currency;
         private Withdraw withdraw;
         private Deposit cerdit;
     }
+
     @Data
-    public class Withdraw{
+    public class Withdraw {
         Float amount;
+        Float cash;
+        Float debit;
     }
+
     @Data
-    public class Deposit{
+    public class Deposit {
         Float amount;
     }
 }
