@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface TagRepository extends MongoRepository<TagEntity,String > {
 
-    List<TagEntity> findByUserIdAndTagType(String userId, String tagType);
+    List<TagEntity> findByUserIdOrTagType(String userId, String tagType);
 
     Optional<TagEntity> findByName(String name);
 }

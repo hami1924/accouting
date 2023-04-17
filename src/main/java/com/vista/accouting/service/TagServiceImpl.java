@@ -66,12 +66,12 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagEntity> list(String userId) {
-        return repository.findByUserIdAndTagType(userId, TagType.GENERAL.name());
+        return repository.findByUserIdOrTagType(userId, TagType.GENERAL.name());
     }
 
     @Override
     public List<TagEntity> listAdmin() {
-        return repository.findByUserIdAndTagType(null, TagType.GENERAL.name());
+        return repository.findByUserIdOrTagType(null, TagType.GENERAL.name());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagEntity findTagInContent(String userId, String content) {
-        List<TagEntity> list=repository.findByUserIdAndTagType(userId, TagType.GENERAL.name());
+        List<TagEntity> list=repository.findByUserIdOrTagType(userId, TagType.GENERAL.name());
 
         return null;
     }

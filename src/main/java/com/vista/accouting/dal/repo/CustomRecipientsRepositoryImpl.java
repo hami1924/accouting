@@ -80,10 +80,12 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
     public List<TagDefaultPageModel> findUniqueCategoryByGroup(String userId) {
         List<TagDefaultPageModel> list=new ArrayList<>();
         MatchOperation aggregationOperation_Match =Aggregation.match(Criteria.where("user._id").is(new ObjectId(userId)));
+        MatchOperation aggregationOperation_NotMatch =Aggregation.match(Criteria.where("category.name").ne("CREDIT"));
+
         GroupOperation aggregationOperation_Size = Aggregation.group("$category.name")
                 .count().as("count")
                 .sum("$amount").as("tagsum");
-        Aggregation aggregation =Aggregation.newAggregation(aggregationOperation_Match,aggregationOperation_Size);
+        Aggregation aggregation =Aggregation.newAggregation(aggregationOperation_Match,aggregationOperation_NotMatch,aggregationOperation_Size);
         AggregationResults<Document> results = mongoTemplate.aggregate( aggregation,Recipients.class,Document.class);
         for (Document document:results.getMappedResults()){
             TagDefaultPageModel tagDefaultPageModel=new TagDefaultPageModel(
