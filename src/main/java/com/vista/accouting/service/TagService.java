@@ -12,6 +12,8 @@ public interface TagService {
 
     TagEntity editById(String id,TagEntity tagEntity);
 
+    TagEntity findByName(String name);
+
     List<TagEntity> list(String userId);
 
     List<TagEntity> listAdmin();

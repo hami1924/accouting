@@ -6,11 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vista.accouting.dal.entity.Recipients;
-import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.CurrencyType;
 import com.vista.accouting.enums.MessageType;
-import com.vista.accouting.enums.TagType;
 import com.vista.accouting.exceptions.NotFoundUserException;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class MuscatBankServiceImpl implements BankService {
+public class MuscatBankServiceImpl implements BankService , MetaDataInfo{
 
     private final String PATTERN_DATE = "([0-9]+(/[0-9]+)+)";
     private final String CARD_NUMBER = "[0-9][0-9][0-9][0-9]X+[0-9][0-9][0-9][0-9]";
@@ -57,6 +55,8 @@ public class MuscatBankServiceImpl implements BankService {
                     .substring(originalMessage.indexOf("your a/c")), VALUE_PATTERN)));
             String partToBalance = getPattern(originalMessage, beforPatternCredit);
             muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
+            muscatBankModel.setTag(getDefaultCreditTagObject(muscatBankModel.getUser().getId(),null));
+            muscatBankModel.setCategory(getDefaultCreditCategoryObject(muscatBankModel.getUser().getId()));
 
         } else if (originalMessage.contains("withdrawn")) {
 
@@ -65,8 +65,8 @@ public class MuscatBankServiceImpl implements BankService {
                     .substring(originalMessage.indexOf("through")), VALUE_PATTERN)));
             String partToBalance = getPattern(originalMessage, beforePatternWithdrawnATM);
             muscatBankModel.setAmount(Float.parseFloat(getPattern(partToBalance, VALUE_PATTERN)));
-            muscatBankModel.setTag(new TagEntity("CASH","en",
-                    TagType.GENERAL,muscatBankModel.getUser().getId()));
+            muscatBankModel.setTag(getDefaultCashTagObject(muscatBankModel.getUser().getId(),null));
+            muscatBankModel.setCategory(getDefaultCashCategoryObject(muscatBankModel.getUser().getId()));
 
         } else if (originalMessage.contains("Card of a/c")) {
             muscatBankModel.setMessageType(MessageType.WITHDRAW);

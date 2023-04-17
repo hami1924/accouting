@@ -10,12 +10,13 @@ import lombok.SneakyThrows;
 import org.bson.types.ObjectId;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;

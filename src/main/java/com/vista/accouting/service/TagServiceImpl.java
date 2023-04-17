@@ -4,15 +4,14 @@ import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.dal.repo.TagRepository;
 import com.vista.accouting.enums.TagType;
 import com.vista.accouting.exceptions.NotFoundUserException;
-import com.vista.accouting.service.models.TagDefaultPageModel;
-import org.bson.BSONObject;
-import org.springframework.stereotype.Component;
+import com.vista.accouting.exceptions.UserFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Component
+@Service
 public class TagServiceImpl implements TagService {
 
     private final TagRepository repository;
@@ -57,13 +56,22 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public TagEntity findByName(String name) {
+        Optional<TagEntity> tag= repository.findByName(name);
+        if (tag.isPresent())
+            return tag.get();
+
+        throw new UserFoundException();
+    }
+
+    @Override
     public List<TagEntity> list(String userId) {
-        return repository.findByUserIdOrAndTagType(userId, TagType.GENERAL.name());
+        return repository.findByUserIdAndTagType(userId, TagType.GENERAL.name());
     }
 
     @Override
     public List<TagEntity> listAdmin() {
-        return repository.findByUserIdOrAndTagType(null, TagType.GENERAL.name());
+        return repository.findByUserIdAndTagType(null, TagType.GENERAL.name());
     }
 
     @Override
@@ -73,7 +81,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagEntity findTagInContent(String userId, String content) {
-        List<TagEntity> list=repository.findByUserIdOrAndTagType(userId, TagType.GENERAL.name());
+        List<TagEntity> list=repository.findByUserIdAndTagType(userId, TagType.GENERAL.name());
 
         return null;
     }

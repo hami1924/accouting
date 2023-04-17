@@ -6,7 +6,7 @@ import lombok.Data;
 import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty;
 
 @Data
-public class TagDto {
+public class CategoryDto {
     @NotNull
     @NotEmpty
     private String name;
@@ -16,10 +16,5 @@ public class TagDto {
     @NotNull
     @NotEmpty
     private TagType tagType;
-
     private String userId;
-
-    @NotNull
-    @NotEmpty
-    private String categoryId;
 }

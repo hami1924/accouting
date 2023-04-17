@@ -2,12 +2,13 @@ package com.vista.accouting.service;
 
 import com.vista.accouting.aspect.globalObject.GlobalObject;
 import com.vista.accouting.aspect.globalObject.SynchronizedGlobalObjectHelper;
+import com.vista.accouting.dal.entity.Category;
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.dal.entity.SmsNumberAlert;
 import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.dal.repo.RecipientsRepository;
 import com.vista.accouting.enums.MessageType;
-import com.vista.accouting.enums.TagType;
+import com.vista.accouting.service.Provider.MetaDataInfo;
 import com.vista.accouting.service.models.*;
 import com.vista.accouting.service.patterns.PatternRecognizedBuilder;
 import com.vista.accouting.service.patterns.PatternRecognizedDecider;
@@ -16,16 +17,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-@Component
+@Service
 @Slf4j
-public class RecipientsServiceImpl implements RecipientsService {
+public class RecipientsServiceImpl implements RecipientsService , MetaDataInfo {
 
     private final PatternRecognizedDecider patternRecognizedDecider;
 
@@ -37,13 +38,16 @@ public class RecipientsServiceImpl implements RecipientsService {
 
     private final TagService tagService;
 
+    private final CategoryService categoryService;
 
-    public RecipientsServiceImpl(PatternRecognizedDecider patternRecognizedDecider, PatternRecognizedBuilder builder, RecipientsRepository repository, SmsNumberAlertService alertService, TagService tagService) {
+
+    public RecipientsServiceImpl(PatternRecognizedDecider patternRecognizedDecider, PatternRecognizedBuilder builder, RecipientsRepository repository, SmsNumberAlertService alertService, TagService tagService, CategoryService categoryServicel) {
         this.patternRecognizedDecider = patternRecognizedDecider;
         this.builder = builder;
         this.repository = repository;
         this.alertService = alertService;
         this.tagService = tagService;
+        this.categoryService = categoryServicel;
     }
 
 
@@ -113,7 +117,7 @@ public class RecipientsServiceImpl implements RecipientsService {
 
     @Override
     public List<TagDefaultPageModel> listTagForDefaultPage(String userId) {
-        List<TagDefaultPageModel> list = repository.findUniqueTagByGroup(userId);
+        List<TagDefaultPageModel> list = repository.findUniqueCategoryByGroup(userId);
         Integer generalSize = 0;
         for (TagDefaultPageModel sizeTag : list) {
             generalSize += sizeTag.getCount();
@@ -190,14 +194,16 @@ public class RecipientsServiceImpl implements RecipientsService {
                     Boolean exist = message.contains(tag.getName());
                     if (exist) {
                         recipients.setTag(tag);
+                        Category category=categoryService.findById(tag.getCategoryId());
+                        recipients.setCategory(category);
                         return;
                     }
                 }
-                recipients.setTag(new TagEntity("UNKNOWN", "en",
-                        TagType.GENERAL, messageModel.getUser().getId()));
+                recipients.setTag(getDefaultUnknownTagObject(messageModel.getUser().getId(),null));
+                recipients.setCategory(getDefaultUnknownCategoryObject(messageModel.getUser().getId()));
             } catch (Exception e) {
-                recipients.setTag(new TagEntity("UNKNOWN", "en",
-                        TagType.GENERAL, messageModel.getUser().getId()));
+                recipients.setTag(getDefaultUnknownTagObject(messageModel.getUser().getId(),null));
+                recipients.setCategory(getDefaultUnknownCategoryObject(messageModel.getUser().getId()));
             }
         }
 

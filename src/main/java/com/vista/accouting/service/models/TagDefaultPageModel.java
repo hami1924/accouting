@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TagDefaultPageModel {
 
-    public TagDefaultPageModel(String _id, Integer count) {
+    public TagDefaultPageModel(String _id, Integer count,Double tagsum) {
         this._id = _id;
         this.count = count;
+        this.tagSum= tagsum;
     }
 
     @JsonProperty(value = "tag")
@@ -21,4 +22,6 @@ public class TagDefaultPageModel {
     private Integer count;
 
     private Double percent;
+
+    private Double tagSum;
 }

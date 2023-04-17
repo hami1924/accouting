@@ -63,12 +63,31 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
     public List<TagDefaultPageModel> findUniqueTagByGroup(String userId) {
         List<TagDefaultPageModel> list=new ArrayList<>();
         MatchOperation aggregationOperation_Match =Aggregation.match(Criteria.where("user._id").is(new ObjectId(userId)));
-        GroupOperation aggregationOperation_Size = Aggregation.group("$tag.name").count().as("count");
+        GroupOperation aggregationOperation_Size = Aggregation.group("$tag.name")
+                .count().as("count")
+                .sum("$amount").as("tagsum");
         Aggregation aggregation =Aggregation.newAggregation(aggregationOperation_Match,aggregationOperation_Size);
         AggregationResults<Document> results = mongoTemplate.aggregate( aggregation,Recipients.class,Document.class);
         for (Document document:results.getMappedResults()){
                         TagDefaultPageModel tagDefaultPageModel=new TagDefaultPageModel(
-                    (String) document.get("_id"),(Integer)document.get("count"));
+                    (String) document.get("_id"),(Integer)document.get("count"),(Double) document.get("tagsum"));
+            list.add(tagDefaultPageModel);
+        }
+        return list;
+    }
+
+    @Override
+    public List<TagDefaultPageModel> findUniqueCategoryByGroup(String userId) {
+        List<TagDefaultPageModel> list=new ArrayList<>();
+        MatchOperation aggregationOperation_Match =Aggregation.match(Criteria.where("user._id").is(new ObjectId(userId)));
+        GroupOperation aggregationOperation_Size = Aggregation.group("$category.name")
+                .count().as("count")
+                .sum("$amount").as("tagsum");
+        Aggregation aggregation =Aggregation.newAggregation(aggregationOperation_Match,aggregationOperation_Size);
+        AggregationResults<Document> results = mongoTemplate.aggregate( aggregation,Recipients.class,Document.class);
+        for (Document document:results.getMappedResults()){
+            TagDefaultPageModel tagDefaultPageModel=new TagDefaultPageModel(
+                    (String) document.get("_id"),(Integer)document.get("count"),(Double) document.get("tagsum"));
             list.add(tagDefaultPageModel);
         }
         return list;

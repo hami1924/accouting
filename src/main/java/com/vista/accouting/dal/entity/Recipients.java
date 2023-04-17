@@ -1,5 +1,6 @@
 package com.vista.accouting.dal.entity;
 
+import com.sun.istack.NotNull;
 import com.vista.accouting.enums.MessageType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -50,7 +51,11 @@ public class Recipients extends Entity {
     // be sorat kamel nabayad inja base modelash. bayad ye model kochak shode inja  base
     private SmsNumberAlert smsNumberAlert;
 
+    // tag and category is must be full
+    @NotNull
     private TagEntity tag;
+    @NotNull
+    private Category category;
 
 //    private MessageInfo messageInfo;
 

@@ -6,12 +6,13 @@ import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.CountryEnums;
 import com.vista.accouting.exceptions.NotFoundUserException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Component
+@Service
 public class SmsNumberAlertServiceImpl implements SmsNumberAlertService {
     private final SmsNumberAlertRepository repository;
 

@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "TAG")
+@Document(collection = "CATEGORY")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagEntity extends Entity {
+public class Category extends Entity{
     @Indexed
     private String name;
     @Indexed
@@ -20,7 +20,5 @@ public class TagEntity extends Entity {
     private TagType tagType;
     @Indexed
     private String userId;
-    @Indexed
-    private String categoryId;
 
 }
