@@ -5,6 +5,7 @@ import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.dal.repo.CategoryRepository;
 import com.vista.accouting.enums.TagType;
 import com.vista.accouting.exceptions.NotFoundUserException;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Category findById(String id) {
-        Optional<Category> category = repository.findById(id);
+        Optional<Category> category = repository.findById(new ObjectId(id));
         if (category.isPresent()) {
             return category.get();
         }

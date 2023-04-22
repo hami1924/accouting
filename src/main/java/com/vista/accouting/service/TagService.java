@@ -18,6 +18,8 @@ public interface TagService {
 
     List<TagEntity> listAdmin();
 
+    List<TagEntity> listTagWithCategoryId(String categoryId);
+
     void deleteById(String id);
 
     TagEntity findTagInContent(String UserId,String content);

@@ -51,4 +51,11 @@ public class TagController {
     public List<TagEntity> adminList()  {
         return tagDtoAdapter.adminList();
     }
+
+    @GetMapping("/category/{categoryId}/list")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<TagEntity> listByCategoryId(@PathVariable String categoryId)  {
+        return tagDtoAdapter.listByCategoryId(categoryId);
+    }
 }

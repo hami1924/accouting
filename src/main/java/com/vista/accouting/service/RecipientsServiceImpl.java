@@ -8,6 +8,7 @@ import com.vista.accouting.dal.entity.SmsNumberAlert;
 import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.dal.repo.RecipientsRepository;
 import com.vista.accouting.enums.MessageType;
+import com.vista.accouting.exceptions.NotFoundUserException;
 import com.vista.accouting.service.Provider.MetaDataInfo;
 import com.vista.accouting.service.models.*;
 import com.vista.accouting.service.patterns.PatternRecognizedBuilder;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -92,6 +94,24 @@ public class RecipientsServiceImpl implements RecipientsService , MetaDataInfo {
     }
 
     @Override
+    public Recipients getById(String tagId) {
+        Optional<Recipients> recipients=repository.findById(new ObjectId(tagId));
+        if (!recipients.isPresent())
+            throw new NotFoundUserException();
+        return recipients.get();
+    }
+
+    @Override
+    public Recipients editMessageTagAndCategory(Recipients recipients,Category category,TagEntity tag) {
+       if (Objects.nonNull(category))
+           recipients.setCategory(category);
+       if (Objects.nonNull(tag))
+           recipients.setTag(tag);
+
+        return repository.save(recipients);
+    }
+
+    @Override
     public DefaultPageModel firstPage(MessageQuery messageQuery) {
 
         DefaultPageModel defaultPageModel = new DefaultPageModel();
@@ -116,8 +136,8 @@ public class RecipientsServiceImpl implements RecipientsService , MetaDataInfo {
     }
 
     @Override
-    public List<TagDefaultPageModel> listTagForDefaultPage(String userId) {
-        List<TagDefaultPageModel> list = repository.findUniqueCategoryByGroup(userId);
+    public List<TagDefaultPageModel> listTagForDefaultPage(MessageQuery messageQuery) {
+        List<TagDefaultPageModel> list = repository.findUniqueCategoryByGroup(messageQuery);
         Integer generalSize = 0;
         for (TagDefaultPageModel sizeTag : list) {
             generalSize += sizeTag.getCount();
@@ -130,7 +150,7 @@ public class RecipientsServiceImpl implements RecipientsService , MetaDataInfo {
     }
 
     private List<TagDefaultPageModel> getTagList(MessageQuery messageQuery) {
-        return listTagForDefaultPage(messageQuery.getUserId());
+        return listTagForDefaultPage(messageQuery);
     }
 
     private DefaultPageModel.DetailPay getAmountWithMessageType(MessageQuery messageQuery, MessageType messageType, DefaultPageModel defaultPageModel) {

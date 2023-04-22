@@ -18,7 +18,7 @@ public interface CustomRecipientsRepository {
 
     List<TagDefaultPageModel> findUniqueTagByGroup(String userId);
 
-    List<TagDefaultPageModel> findUniqueCategoryByGroup(String userId);
+    List<TagDefaultPageModel> findUniqueCategoryByGroup(MessageQuery messageQuery);
 
 
 

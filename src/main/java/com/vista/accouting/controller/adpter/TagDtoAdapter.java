@@ -54,6 +54,10 @@ public class TagDtoAdapter {
         return tagService.listAdmin();
     }
 
+    public List<TagEntity> listByCategoryId(String categoryId){
+        return tagService.listTagWithCategoryId(categoryId);
+    }
+
 
     private void validateUser(TagDto tagDto) {
         if (Objects.nonNull(tagDto.getUserId()))

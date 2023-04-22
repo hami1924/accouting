@@ -1,12 +1,14 @@
 package com.vista.accouting.controller;
 
 import com.vista.accouting.controller.adpter.MessageDtoAdapter;
+import com.vista.accouting.controller.dto.EditRecipientDto;
 import com.vista.accouting.controller.dto.MessageDto;
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.service.models.DefaultPageModel;
 import com.vista.accouting.service.models.MessageQuery;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -35,8 +37,16 @@ public class RecipientsController extends BaseController{
         return messageDtoAdapter.listMessage(messageQuery);
     }
 
+    @PutMapping("/message")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Recipients editRecipients(@RequestBody EditRecipientDto editRecipientDto){
+        return messageDtoAdapter.editRecipientsTagAndCategory(editRecipientDto);
+    }
+
     @PostMapping("/default/page")
     public DefaultPageModel defaultPage(@RequestBody MessageQuery messageQuery)  {
         return messageDtoAdapter.defaultPage(messageQuery);
     }
+
+
 }

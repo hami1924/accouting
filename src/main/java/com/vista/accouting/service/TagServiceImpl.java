@@ -5,6 +5,7 @@ import com.vista.accouting.dal.repo.TagRepository;
 import com.vista.accouting.enums.TagType;
 import com.vista.accouting.exceptions.NotFoundUserException;
 import com.vista.accouting.exceptions.UserFoundException;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagEntity findById(String id) {
 
-        Optional<TagEntity> tagEntity = repository.findById(id);
+        Optional<TagEntity> tagEntity = repository.findById(new ObjectId(id));
         if (tagEntity.isPresent()) {
             return tagEntity.get();
         }
@@ -72,6 +73,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<TagEntity> listAdmin() {
         return repository.findByUserIdOrTagType(null, TagType.GENERAL.name());
+    }
+
+    @Override
+    public List<TagEntity> listTagWithCategoryId(String categoryId) {
+        return repository.findByCategoryIdAndTagType(categoryId,TagType.GENERAL.name());
     }
 
     @Override

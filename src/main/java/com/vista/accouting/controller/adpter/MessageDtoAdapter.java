@@ -1,22 +1,25 @@
 package com.vista.accouting.controller.adpter;
 
 import com.vista.accouting.controller.dto.ContentDto;
+import com.vista.accouting.controller.dto.EditRecipientDto;
 import com.vista.accouting.controller.dto.MessageDto;
 import com.vista.accouting.controller.mapper.MessageDtoMapper;
+import com.vista.accouting.dal.entity.Category;
 import com.vista.accouting.dal.entity.Recipients;
+import com.vista.accouting.dal.entity.TagEntity;
 import com.vista.accouting.dal.entity.User;
 import com.vista.accouting.exceptions.NotFoundUserException;
+import com.vista.accouting.service.CategoryService;
 import com.vista.accouting.service.RecipientsService;
+import com.vista.accouting.service.TagService;
 import com.vista.accouting.service.UserService;
 import com.vista.accouting.service.models.DefaultPageModel;
 import com.vista.accouting.service.models.Message;
 import com.vista.accouting.service.models.MessageQuery;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,10 +32,16 @@ public class MessageDtoAdapter {
 
     private final UserService userService;
 
+    private final TagService tagService;
 
-    public MessageDtoAdapter(RecipientsService recipientsService, UserService userService) {
+    private final CategoryService categoryService;
+
+
+    public MessageDtoAdapter(RecipientsService recipientsService, UserService userService, TagService tagService, CategoryService categoryService) {
         this.recipientsService = recipientsService;
         this.userService = userService;
+        this.tagService = tagService;
+        this.categoryService = categoryService;
     }
 
     public Boolean insertMessageDto(MessageDto messageDto){
@@ -59,6 +68,19 @@ public class MessageDtoAdapter {
         if (!user.isPresent())
             throw new NotFoundUserException();
         return recipientsService.messageList(messageQuery);
+    }
+
+    public Recipients editRecipientsTagAndCategory(EditRecipientDto editRecipientDto){
+
+        Optional<User> user=userService.getById(editRecipientDto.getUserId());
+
+        Recipients recipients=recipientsService.getById(editRecipientDto.getMessageId());
+
+        TagEntity tag=tagService.findById(editRecipientDto.getTagId());
+
+        Category category=categoryService.findById(tag.getCategoryId());
+
+        return recipientsService.editMessageTagAndCategory(recipients,category,tag);
     }
 
     public DefaultPageModel defaultPage(MessageQuery messageQuery)  {
