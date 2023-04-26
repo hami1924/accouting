@@ -16,7 +16,9 @@ public interface RecipientsService {
 
     Recipients getById(String tagId);
 
-    Recipients editMessageTagAndCategory(Recipients recipients, Category category, TagEntity tag);
+    Recipients editMessageWithTag(Recipients recipients, Category category, TagEntity tag);
+
+    Recipients editMessageWithCategory(Recipients recipients, Category category);
 
     DefaultPageModel firstPage(MessageQuery messageQuery);
 

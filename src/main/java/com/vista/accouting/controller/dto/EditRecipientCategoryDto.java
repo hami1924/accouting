@@ -1,11 +1,10 @@
 package com.vista.accouting.controller.dto;
 
-
 import lombok.Data;
 
 @Data
-public class EditRecipientDto {
+public class EditRecipientCategoryDto {
     private String userId;
     private String messageId;
-    private String tagId;
+    private String categoryId;
 }

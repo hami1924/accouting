@@ -102,11 +102,24 @@ public class RecipientsServiceImpl implements RecipientsService , MetaDataInfo {
     }
 
     @Override
-    public Recipients editMessageTagAndCategory(Recipients recipients,Category category,TagEntity tag) {
+    public Recipients editMessageWithTag(Recipients recipients, Category category, TagEntity tag) {
        if (Objects.nonNull(category))
            recipients.setCategory(category);
        if (Objects.nonNull(tag))
            recipients.setTag(tag);
+
+        return repository.save(recipients);
+    }
+
+    @Override
+    public Recipients editMessageWithCategory(Recipients recipients, Category category) {
+        if (Objects.nonNull(category)){
+            recipients.setCategory(category);
+        }
+
+        //when select category , tag must be Unknown
+        TagEntity tag=getDefaultUnknownTagObject(recipients.getUser().getId(),null);
+            recipients.setTag(tag);
 
         return repository.save(recipients);
     }

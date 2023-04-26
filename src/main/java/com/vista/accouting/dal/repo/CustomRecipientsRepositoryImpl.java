@@ -116,6 +116,10 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
             query.addCriteria(Criteria.where("tag.name").is(messageQuery.getTag()));
         }
 
+        if (!Objects.isNull(messageQuery.getCategory())) {
+            query.addCriteria(Criteria.where("category.name").is(messageQuery.getCategory()));
+        }
+
         if (!Objects.isNull(messageQuery.getBanksEnum())) {
             query.addCriteria(Criteria.where("smsNumberAlert.banks").is(messageQuery.getBanksEnum().toString()));
         }

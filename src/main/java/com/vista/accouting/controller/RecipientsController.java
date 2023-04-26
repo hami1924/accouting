@@ -1,7 +1,8 @@
 package com.vista.accouting.controller;
 
 import com.vista.accouting.controller.adpter.MessageDtoAdapter;
-import com.vista.accouting.controller.dto.EditRecipientDto;
+import com.vista.accouting.controller.dto.EditRecipientCategoryDto;
+import com.vista.accouting.controller.dto.EditRecipientTagDto;
 import com.vista.accouting.controller.dto.MessageDto;
 import com.vista.accouting.dal.entity.Recipients;
 import com.vista.accouting.service.models.DefaultPageModel;
@@ -39,8 +40,14 @@ public class RecipientsController extends BaseController{
 
     @PutMapping("/message")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Recipients editRecipients(@RequestBody EditRecipientDto editRecipientDto){
-        return messageDtoAdapter.editRecipientsTagAndCategory(editRecipientDto);
+    public Recipients editRecipientsWithTag(@RequestBody EditRecipientTagDto editRecipientTagDto){
+        return messageDtoAdapter.editRecipientsTagAndCategory(editRecipientTagDto);
+    }
+
+    @PutMapping("/message/category")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Recipients editRecipientsWithCategory(@RequestBody EditRecipientCategoryDto editRecipientCategoryDto){
+        return messageDtoAdapter.editRecipientsCategory(editRecipientCategoryDto);
     }
 
     @PostMapping("/default/page")

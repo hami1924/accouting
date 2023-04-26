@@ -1,7 +1,8 @@
 package com.vista.accouting.controller.adpter;
 
 import com.vista.accouting.controller.dto.ContentDto;
-import com.vista.accouting.controller.dto.EditRecipientDto;
+import com.vista.accouting.controller.dto.EditRecipientCategoryDto;
+import com.vista.accouting.controller.dto.EditRecipientTagDto;
 import com.vista.accouting.controller.dto.MessageDto;
 import com.vista.accouting.controller.mapper.MessageDtoMapper;
 import com.vista.accouting.dal.entity.Category;
@@ -67,20 +68,36 @@ public class MessageDtoAdapter {
         Optional<User> user=userService.getById(messageQuery.getUserId());
         if (!user.isPresent())
             throw new NotFoundUserException();
+
+        if (Objects.nonNull(messageQuery.getTag())){
+            messageQuery.setCategory(messageQuery.getTag());
+            messageQuery.setTag(null);
+        }
         return recipientsService.messageList(messageQuery);
     }
 
-    public Recipients editRecipientsTagAndCategory(EditRecipientDto editRecipientDto){
+    public Recipients editRecipientsTagAndCategory(EditRecipientTagDto editRecipientTagDto){
 
-        Optional<User> user=userService.getById(editRecipientDto.getUserId());
+        Optional<User> user=userService.getById(editRecipientTagDto.getUserId());
 
-        Recipients recipients=recipientsService.getById(editRecipientDto.getMessageId());
+        Recipients recipients=recipientsService.getById(editRecipientTagDto.getMessageId());
 
-        TagEntity tag=tagService.findById(editRecipientDto.getTagId());
+        TagEntity tag=tagService.findById(editRecipientTagDto.getTagId());
 
         Category category=categoryService.findById(tag.getCategoryId());
 
-        return recipientsService.editMessageTagAndCategory(recipients,category,tag);
+        return recipientsService.editMessageWithTag(recipients,category,tag);
+    }
+
+    public Recipients editRecipientsCategory(EditRecipientCategoryDto editRecipientCategoryDto){
+
+        Optional<User> user=userService.getById(editRecipientCategoryDto.getUserId());
+
+        Recipients recipients=recipientsService.getById(editRecipientCategoryDto.getMessageId());
+
+        Category category=categoryService.findById(editRecipientCategoryDto.getCategoryId());
+
+        return recipientsService.editMessageWithCategory(recipients,category);
     }
 
     public DefaultPageModel defaultPage(MessageQuery messageQuery)  {
