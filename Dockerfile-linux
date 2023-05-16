@@ -10,4 +10,4 @@ COPY target/recloy-0.0.1.jar /recloy-0.0.1.jar
 #RUN mkdir -p ${MONGO_INITDB_SCRIPTS_HOST_PATH}
 EXPOSE 8080
 #ENTRYPOINT ["java","-Dspring.data.mongodb.uri=mongodb://api-database4:27017/recloy","-Djava.security.egd=file:/dev/./urandom","-jar","/recloy-0.0.1.jar"]
-ENTRYPOINT ["java","-jar","/recloy-0.0.1.jar"]
+ENTRYPOINT ["java","-Xms512m", "-Xmx1g","-jar","/recloy-0.0.1.jar"]

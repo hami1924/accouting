@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -133,6 +134,7 @@ public class CustomRecipientsRepositoryImpl implements CustomRecipientsRepositor
                 query.addCriteria(Criteria.where(QUERY_DATE).lt(messageQuery.getTo()));
             }
         }
+        query.with(Sort.by(Sort.Direction.DESC,"date"));
         return query;
 
     }

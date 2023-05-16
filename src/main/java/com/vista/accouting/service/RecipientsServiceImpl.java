@@ -151,12 +151,12 @@ public class RecipientsServiceImpl implements RecipientsService , MetaDataInfo {
     @Override
     public List<TagDefaultPageModel> listTagForDefaultPage(MessageQuery messageQuery) {
         List<TagDefaultPageModel> list = repository.findUniqueCategoryByGroup(messageQuery);
-        Integer generalSize = 0;
+        Double generalSize = 0D;
         for (TagDefaultPageModel sizeTag : list) {
-            generalSize += sizeTag.getCount();
+            generalSize += sizeTag.getTagSum();
         }
         for (TagDefaultPageModel addPersent : list) {
-            Double per = (Double.valueOf(addPersent.getCount()) / generalSize) * 100;
+            Double per = (Double.valueOf(addPersent.getTagSum()) / generalSize) * 100;
             addPersent.setPercent(per);
         }
         return list;
