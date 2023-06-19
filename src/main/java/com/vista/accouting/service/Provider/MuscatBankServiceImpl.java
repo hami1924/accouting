@@ -10,10 +10,12 @@ import com.vista.accouting.enums.BanksEnum;
 import com.vista.accouting.enums.CurrencyType;
 import com.vista.accouting.enums.MessageType;
 import com.vista.accouting.exceptions.NotFoundUserException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,9 +44,9 @@ public class MuscatBankServiceImpl implements BankService , MetaDataInfo{
     public Recipients getMessage(String originalMessage, String smsAlert, Recipients muscatBankModel) {
 
         muscatBankModel.setCardNumber(getPattern(originalMessage, CARD_NUMBER));
-        String dateOperation = getPattern(originalMessage, PATTERN_DATE);
-        muscatBankModel.setOperationDate(dateOperation);
+        String dateOperation = dateRecognize(originalMessage);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        muscatBankModel.setOperationDate(dateOperation);
         LocalDate dateTime = LocalDate.parse(dateOperation, formatter);
         muscatBankModel.setDate(dateTime);
         muscatBankModel.setCurrency(CurrencyType.OMR.toString());
@@ -99,6 +101,51 @@ public class MuscatBankServiceImpl implements BankService , MetaDataInfo{
                 return match.get();
         }
         return "";
+    }
+
+    private String dateRecognize(String message){
+        String text= (StringUtils.substringBetween(message,"on",".")).strip();
+        if (Objects.nonNull(text) && text.contains("/")){
+            String dateOperation = getPattern(message, PATTERN_DATE);
+            return dateOperation;
+        }else {
+            if(text.contains("JAN")){
+                return createDateWithFormat(text,"JAN","01");
+            } else if(text.contains("FEB")){
+                return createDateWithFormat(text,"FEB","02");
+            }else if(text.contains("MAR")){
+                return createDateWithFormat(text,"MAR","03");
+            }else if(text.contains("APR")){
+                return createDateWithFormat(text,"APR","04");
+            }else if(text.contains("MAY")){
+                return createDateWithFormat(text,"MAY","05");
+            }else if(text.contains("JUN")){
+                return createDateWithFormat(text,"JUN","06");
+            }else if(text.contains("JUL")){
+                return createDateWithFormat(text,"JUL","07");
+            }else if(text.contains("AUG")){
+                return createDateWithFormat(text,"AUG","08");
+            }else if(text.contains("SEP")){
+                return createDateWithFormat(text,"SEP","09");
+            }else if(text.contains("OCT")){
+                return createDateWithFormat(text,"OCT","10");
+            }else if(text.contains("NOV")){
+                return createDateWithFormat(text,"NOV","11");
+            }else if(text.contains("DEC")){
+                return createDateWithFormat(text,"DEC","12");
+            }
+        }
+        return null;
+    }
+    //create best format for us.
+    private String createDateWithFormat(String test,String month,String number){
+        String[] testSplit=StringUtils.split(test,month);
+        String firstPart=testSplit[0].strip();
+        String[] textPartSplitTwo=StringUtils.split(testSplit[1]);
+        String secondPart=textPartSplitTwo[0].strip();
+        String result=firstPart+"/"+number+"/"+secondPart;
+
+        return result;
     }
 
 
