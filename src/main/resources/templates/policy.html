@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--    <link rel="icon" type="image/png" href="./src/recloy.png" />-->
+    <link rel="icon" type="image/png" th:href="@{/src/recloy.png}"/>
+    <title>Recloy</title>
+<!--    <link href="./css/bootstrap-min.css" rel="stylesheet" />-->
+    <link rel="stylesheet" th:href="@{/css/bootstrap-min.css}"/>
+  </head>
+  <body>
+    <div style="height: 300px; background-color: #141f3d">
+      <div class="d-flex flex-row">
+        <div class="p-2">
+          <img  th:src="@{/src/recloy.png}"
+               style="width: auto; height: 195px" />
+        </div>
+        <div class="p-2 d-flex align-items-center">
+          <h1 class="text-light">Recloy Privacy Policy</h1>
+        </div>
+      </div>
+    </div>
+    <div class="p-4">
+      <h3>Description</h3>
+      <h6>
+        Recloy collects SMS information to process your transactional SMS
+        automatically into your expenses. This helps you to manage your finances
+        without spending time on manual tracking No personal SMS are processed.
+        This information is never shared to any third party.
+      </h6>
+      <br />
+      <h3>SMS Permission</h3>
+      <h6>
+        To proccess your expenses, we need information your sms, so Recloy needs
+        this permission to read sms Recloy assures you that your privacy will be
+        respected and your personal messages will not be processed and your
+        transactions will not be shared with third parties.
+      </h6>
+      <br />
+      <h3>BIOMETRIC Permission</h3>
+      <h6>
+        To safe information and your privacy, you must enter the security lock
+        you registered for your device when logging into the app. Recloy does
+        not save your security lock information, so you must enter your security
+        lock every time you log into the app.
+      </h6>
+      <br />
+      <h3>INTERNET Permission</h3>
+      <h6>
+        To process expenses, your transaction information is encrypted and sent
+        to Recloy's secure servers, and the result is sent to you.
+      </h6>
+      <br />
+      <h3>Contact us</h3>
+      <h6>
+        If you have any questions or suggestions about our privacy policy,
+        please let us know
+      </h6>
+      <a href="mailto:recloymail@gmail.com">Send Email</a>
+    </div>
+<!--    <script src="./js/bootstrap-min.js"></script>-->
+    <script th:src="@{/js/bootstrap-min.js}"></script>
+
+  </body>
+</html>
