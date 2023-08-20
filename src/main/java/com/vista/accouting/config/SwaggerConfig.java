@@ -9,22 +9,25 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
 @Configuration
+@Profile({"dev","prod"})
 public class SwaggerConfig {
-    @Value("${recloy.openapi.dev-url}")
-    private String devUrl;
 
+//    @Profile({"dev"})
+//    @Value("${recloy.openapi.dev-url}")
+//    private String devUrl;
     @Value("${recloy.openapi.prod-url}")
     private String prodUrl;
 
     @Bean
     public OpenAPI myOpenAPI() {
-        Server devServer = new Server();
-        devServer.setUrl(devUrl);
-        devServer.setDescription("Server URL in Development environment");
+//        Server devServer = new Server();
+//        devServer.setUrl(devUrl);
+//        devServer.setDescription("Server URL in Development environment");
 
         Server prodServer = new Server();
         prodServer.setUrl(prodUrl);
@@ -44,6 +47,6 @@ public class SwaggerConfig {
                 .description("This API exposes endpoints to manage tutorials.").termsOfService("https://www.recloy.com/terms")
                 .license(mitLicense);
 
-        return new OpenAPI().info(info).servers(List.of(devServer, prodServer));
+        return new OpenAPI().info(info).servers(List.of( prodServer));
     }
 }

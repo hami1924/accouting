@@ -5,4 +5,6 @@ import lombok.Data;
 @Data
 public class ContentDto {
     private String content;
+
+    private String address;
 }
