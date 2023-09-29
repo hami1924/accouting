@@ -15,7 +15,7 @@
     <description>recloy</description>
     <properties>
         <java.version>11</java.version>
-        <logback.contrib.version>0.1.5</logback.contrib.version>
+        <log-back.version>0.1.5</log-back.version>
     </properties>
 
     <dependencies>
@@ -129,11 +129,29 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.1.0</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback.contrib</groupId>-->
+<!--            <artifactId>logback-jackson</artifactId>-->
+<!--            <version>${logback.contrib.version}</version>-->
+<!--        </dependency>-->
+
+
+            <dependency>
+                <groupId>ch.qos.logback.contrib</groupId>
+                <artifactId>logback-json-classic</artifactId>
+                <version>${log-back.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback.contrib</groupId>
+                <artifactId>logback-jackson</artifactId>
+                <version>${log-back.version}</version>
+            </dependency>
         <dependency>
-            <groupId>ch.qos.logback.contrib</groupId>
-            <artifactId>logback-jackson</artifactId>
-            <version>${logback.contrib.version}</version>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>6.3</version>
         </dependency>
+
 
     </dependencies>
 

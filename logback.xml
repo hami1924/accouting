@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<!--    <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>/some/path/to/your/file.json.log</file>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>-->
+<!--                /some/path/to/your/hamed.log.%d{yyyy-MM-dd}-->
+<!--            </fileNamePattern>-->
+<!--            <maxHistory>30</maxHistory>-->
+
+<!--        </rollingPolicy>-->
+
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />-->
+<!--    </appender>-->
+<!--    <root level="info">-->
+<!--        <appender-ref ref="JSON" />-->
+<!--    </root>-->
+
+
+  <property name="maxFileSize" value="50MB"/>
+  <property name="logFilesPath" value="recloy/logs/"/>
+  <property name="patternLog"
+          value="%n%-7([%level]) [%date{${datePattern}}]  [%X{requestId}] thread:[%-25.25(%thread)] %logger{40}.%method@%line:%n\t%message%n"/>
+  <property name="simplePatternLog" value="%n [%X{requestId}] [%d] [%thread] [level] [%msg]"/>
+  <property name="patternDate" value="%d{yyyy-MM-dd}"/>
+  <appender name="Console"
+          class="ch.qos.logback.core.ConsoleAppender">
+  <layout class="ch.qos.logback.classic.PatternLayout">
+    <Pattern>${patternLog}</Pattern>
+  </layout>
+  </appender>
+
+  <appender name="CXF-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+<file>${logFilesPath}/cxf_${hostName}.log</file>
+<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+    <charset>UTF-8</charset>
+    <Pattern>${patternLog}</Pattern>
+</encoder>
+<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <!-- rollover daily -->
+    <fileNamePattern>${logFilesPath}/${patternDate}/cxf_${hostName}.${patternDate}.%i.log</fileNamePattern>
+    <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>${maxFileSize}</maxFileSize>
+    </timeBasedFileNamingAndTriggeringPolicy>
+</rollingPolicy>
+</appender>
+
+  <logger name="org.apache.cxf" level="INFO" additivity="false">
+ <appender-ref ref="CXF-LOG"/>
+ </logger>
+  <logger name="org.quartz" level="ERROR"/>
+
+  <appender name="boomAccess" class="ch.qos.logback.core.rolling.RollingFileAppender">
+<file>${logFilesPath}/boom-access_${hostName}.log</file>
+ <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+    <charset>UTF-8</charset>
+    <Pattern>${simplePatternLog}</Pattern>
+ </encoder>
+ <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <!-- rollover daily -->
+    <fileNamePattern>${logFilesPath}/${patternDate}/boom-access_${hostName}.${patternDate}.%i.log.gz
+    </fileNamePattern>
+    <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>${maxFileSize}</maxFileSize>
+    </timeBasedFileNamingAndTriggeringPolicy>
+  </rollingPolicy>
+ </appender>
+    <appender name="boomAccess" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFilesPath}/boom-access_${hostName}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <Pattern>${simplePatternLog}</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${logFilesPath}/${patternDate}/boom-access_${hostName}.${patternDate}.%i.log.gz
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+
+    <!-- Boom Not Persist-->
+    <appender name="boomNotPersistently" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFilesPath}/boom-not-persistently_${hostName}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <Pattern>${notPersistPatternLog}</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${logFilesPath}/${patternDate}/boom-not-persistently_${hostName}.${patternDate}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="BOOM-APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFilesPath}/tosan-boom_${hostName}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <Pattern>${patternLog}</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${logFilesPath}/${patternDate}/tosan-boom_${hostName}.${patternDate}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+
+    <logger name="org.apache.catalina" level="INFO" additivity="false">
+        <appender-ref ref="BOOM-APP"/>
+    </logger>
+
+        <logger name="org.hibernate.SQL" additivity="false" >
+            <level value="DEBUG" />
+            <appender-ref ref="Console" />
+        </logger>
+
+        <logger name="org.hibernate.type" additivity="false" >
+            <level value="info" />
+            <appender-ref ref="Console" />
+        </logger>
+
+    <root level="info">
+        <appender-ref ref="BOOM-APP"/>
+    </root>
+
+</configuration>

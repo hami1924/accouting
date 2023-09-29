@@ -22,7 +22,13 @@ public class JsonDateSerializer extends JsonSerializer<LocalDate>
     public void serialize(LocalDate date, JsonGenerator gen, SerializerProvider provider)
             throws IOException, JsonProcessingException
     {
-        String formattedDate = dateFormat.format(date);
-        gen.writeString(formattedDate);
+        try {
+//            String formattedDate = dateFormat.format(date);
+            String formattedDate = date.toString();
+            gen.writeString(formattedDate);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
